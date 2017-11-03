@@ -5,13 +5,13 @@
 #define DOUT1 PA1    // data pin to the first lca
 #define DOUT2 PA2    // data pin to the second lca
 #define DOUT3 PA3    // data pin to the third lca
-#define DOUT4 PA4
-#define DOUT5 PA5
+//#define DOUT4 PA4
+//#define DOUT5 PA5
 
 
 #define TARE_TIMEOUT_SECONDS 4
 
-byte DOUTS[5] = {DOUT1, DOUT2, DOUT3, DOUT4, DOUT5};
+byte DOUTS[3] = {DOUT1, DOUT2, DOUT3/*, DOUT4, DOUT5*/};
 
 #define CHANNEL_COUNT sizeof(DOUTS)/sizeof(byte)
 
@@ -22,7 +22,7 @@ HX711MULTI scales(CHANNEL_COUNT, DOUTS, CLK);
 void setup() {
   Serial.begin(9600);
   Serial.flush();
-  pinMode(11,OUTPUT);
+  pinMode(PC13, OUTPUT);
   
   tare();
 }
@@ -41,14 +41,16 @@ void sendRawData() {
   scales.read(results);
 char info[50];
    String str;
-   sprintf(info,"%lu,%lu,%lu,%lu,%lu",-results[0],-results[1],-results[2],-results[3],-results[4]);
+   sprintf(info,"%lu,%lu,%lu,0,0",-results[0],-results[1],-results[2]/*,-results[3],-results[4]*/);
    str += info;
-   Serial.println(str);
+   digitalWrite(PC13,HIGH);  
+   Serial.println(str); 
   delay(100);
+  digitalWrite(PC13,LOW);
 }
 
 void loop() {
-  
+
   sendRawData(); 
 
 
@@ -59,5 +61,5 @@ void loop() {
     tare();
   }
  }
- 
+
 
